@@ -126,3 +126,7 @@ resource "azurerm_virtual_machine" "vm" {
     provision_vm_agent  = true
   }
 }
+
+output "vmID" {
+  value = azurerm_virtual_machine.vm.id
+}

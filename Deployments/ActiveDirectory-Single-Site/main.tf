@@ -122,7 +122,7 @@ locals {
   dc1name                     =   "${var.NamingConvention}-dc-01"
   dc1IP                       =   "${var.vnet1ID}.1.101"
   DataDisk1Name               =   "NTDS"
-  InternalDomainName          =   concat("${var.SubDNSDomain},${var.InternalDomain}","${var.InternalTLD}")
+  InternalDomainName          =   format("%s%s%s%s", var.SubDNSDomain, var.InternalDomain, ".", var.InternalTLD)
 }
 
 data "azurerm_key_vault_secret" "main" {
@@ -169,6 +169,17 @@ module "deployVNet1" {
   ]
 }
 
+module "deployBastionHost1" {
+  source   = "./Modules/Network/BastionHost"
+  vnetName            = local.VNet1.vnet1Name
+  subnetID           = module.deployVNet1.subnet3ID
+  Location            = var.Location1
+  ResourceGroupName   = var.ResourceGroupName1
+  depends_on = [
+    module.deployVNet1
+  ]
+}
+
 module "deployDC1" {
   source   = "./Modules/Compute/VirtualMachines/1nic-2disk-vm"
   computerName        = local.dc1name
@@ -192,7 +203,8 @@ module "deployDC1" {
 }
 
 module "PromoteDC1" {
-  source   = "./Modules/Compute/VirtualMachines/1nic-2disk-vm"
+  source   = "./Modules/Compute/VirtualMachines/DSC/FIRSTDC"
+  ResourceGroupName         = var.ResourceGroupName1  
   computerName              = local.dc1name
   TimeZone                  = var.TimeZone1
   NetBiosDomain             = var.NetBiosDomain
@@ -200,7 +212,7 @@ module "PromoteDC1" {
   Location                  = var.Location1
   adminUsername             = var.adminUsername
   adminPassword             = data.azurerm_key_vault_secret.main.value
-  vmID                      = module.deployDC1.id
+  vmID                      = module.deployDC1.vmID
   artifactsLocation         = var.artifactsLocation
   artifactsLocationSasToken = var.artifactsLocationSasToken
   depends_on = [

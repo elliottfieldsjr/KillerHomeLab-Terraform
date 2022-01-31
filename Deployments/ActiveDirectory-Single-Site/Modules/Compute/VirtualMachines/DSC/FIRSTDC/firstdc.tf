@@ -56,7 +56,7 @@ variable "vmID" {
 }
 
 locals {
-    ModulesUrl  =   concat("${var.artifactsLocation}","DSC/FIRSTDC.zip","${var.artifactsLocationSasToken}")
+    ModulesUrl  =   format("%s%s%s", var.artifactsLocation, "DSC/FIRSTDC.zip", var.artifactsLocationSasToken)
 }
 
 resource "azurerm_virtual_machine_extension" "firstdc" {
@@ -73,10 +73,10 @@ resource "azurerm_virtual_machine_extension" "firstdc" {
         "Properties": {
             "TimeZone": "${var.TimeZone}",
             "DomainName": "${var.domainName}",
-            "NetBiosDomain": "${var.NetBIosDomain}",            
+            "NetBiosDomain": "${var.NetBiosDomain}",            
             "AdminCreds": {
                 "UserName": "${var.adminUsername}",
-                "Password": "${adminPassword}"
+                "Password": "PrivateSettingsRef:AdminPassword"
             }
         }
     }
@@ -84,7 +84,9 @@ SETTINGS
 
   protected_settings = <<PROTECTED_SETTINGS
     {
-        "adminPassword": "${var.adminPassword}"
+      "Items":  {
+        "AdminPassword": "${var.adminPassword}"
+        }
     }
 PROTECTED_SETTINGS
 }

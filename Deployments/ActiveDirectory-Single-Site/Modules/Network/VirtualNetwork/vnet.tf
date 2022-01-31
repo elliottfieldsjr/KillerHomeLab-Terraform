@@ -74,3 +74,7 @@ output "subnet1ID" {
 output "subnet2ID" {
   value = azurerm_virtual_network.main.subnet.*.id[1]
 }
+
+output "subnet3ID" {
+  value = azurerm_virtual_network.main.subnet.*.id[2]
+}
