@@ -65,8 +65,8 @@ variable "adminPassword" {
 }
 
 locals {
-  NicName             = "${var.computerName}-nic"
-  StorageAccountType  = "Standard_LRS"
+  NicName            = "${var.computerName}-nic"
+  StorageAccountType = "Standard_LRS"
 }
 
 resource "azurerm_network_interface" "nic" {
@@ -83,11 +83,11 @@ resource "azurerm_network_interface" "nic" {
 }
 
 resource "azurerm_virtual_machine" "vm" {
-  name                  = var.computerName
-  location              = var.Location
-  resource_group_name   = var.ResourceGroupName
-  vm_size               = var.vmsize
-  license_type          = var.licenseType
+  name                = var.computerName
+  location            = var.Location
+  resource_group_name = var.ResourceGroupName
+  vm_size             = var.vmsize
+  license_type        = var.licenseType
   network_interface_ids = [
     azurerm_network_interface.nic.id
   ]
@@ -104,7 +104,7 @@ resource "azurerm_virtual_machine" "vm" {
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = local.StorageAccountType
-  }      
+  }
 
   os_profile {
     computer_name  = var.computerName
@@ -113,6 +113,6 @@ resource "azurerm_virtual_machine" "vm" {
   }
 
   os_profile_windows_config {
-    provision_vm_agent  = true
+    provision_vm_agent = true
   }
 }

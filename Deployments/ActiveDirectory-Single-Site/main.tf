@@ -117,22 +117,22 @@ variable "KeyVaultResourceId" {
 }
 
 locals {
-  StorageAccountType  =   "Standard_LRS"
-  VNet1               =   {
+  StorageAccountType = "Standard_LRS"
+  VNet1 = {
 
-    vnet1Name                 = "${var.NamingConvention}-VNet1"
-    vnet1Prefix               = "${var.vnet1ID}.0.0/16"
-    vnet1subnet1Name          = "${var.NamingConvention}-VNet1-Subnet1"
-    vnet1subnet1Prefix        = "${var.vnet1ID}.1.0/24"
-    vnet1subnet2Name          = "${var.NamingConvention}-VNet1-Subnet2"
-    vnet1subnet2Prefix        = "${var.vnet1ID}.2.0/24"    
-    vnet1BastionsubnetPrefix  = "${var.vnet1ID}.253.0/24"        
+    vnet1Name                = "${var.NamingConvention}-VNet1"
+    vnet1Prefix              = "${var.vnet1ID}.0.0/16"
+    vnet1subnet1Name         = "${var.NamingConvention}-VNet1-Subnet1"
+    vnet1subnet1Prefix       = "${var.vnet1ID}.1.0/24"
+    vnet1subnet2Name         = "${var.NamingConvention}-VNet1-Subnet2"
+    vnet1subnet2Prefix       = "${var.vnet1ID}.2.0/24"
+    vnet1BastionsubnetPrefix = "${var.vnet1ID}.253.0/24"
 
   }
-  dc1name                     =   "${var.NamingConvention}-dc-01"
-  dc1IP                       =   "${var.vnet1ID}.1.101"
-  DataDisk1Name               =   "NTDS"
-  InternalDomainName          =   format("%s%s%s%s", var.SubDNSDomain, var.InternalDomain, ".", var.InternalTLD)
+  dc1name            = "${var.NamingConvention}-dc-01"
+  dc1IP              = "${var.vnet1ID}.1.101"
+  DataDisk1Name      = "NTDS"
+  InternalDomainName = format("%s%s%s%s", var.SubDNSDomain, var.InternalDomain, ".", var.InternalTLD)
 }
 
 data "azurerm_key_vault_secret" "main" {
@@ -146,13 +146,13 @@ resource "azurerm_resource_group" "RG1" {
 }
 
 module "deployVNet1" {
-  source   = "./Modules/Network/VirtualNetwork"
+  source              = "./Modules/Network/VirtualNetwork"
   vnetName            = local.VNet1.vnet1Name
   vnetPrefix          = local.VNet1.vnet1Prefix
   subnet1Name         = local.VNet1.vnet1subnet1Name
   subnet1Prefix       = local.VNet1.vnet1subnet1Prefix
   subnet2Name         = local.VNet1.vnet1subnet2Name
-  subnet2Prefix       = local.VNet1.vnet1subnet2Prefix  
+  subnet2Prefix       = local.VNet1.vnet1subnet2Prefix
   BastionsubnetPrefix = local.VNet1.vnet1BastionsubnetPrefix
   Location            = var.Location1
   ResourceGroupName   = var.ResourceGroupName1
@@ -162,31 +162,31 @@ module "deployVNet1" {
 }
 
 module "deployBastionHost1" {
-  source   = "./Modules/Network/BastionHost"
-  vnetName            = local.VNet1.vnet1Name
-  subnetID           = module.deployVNet1.subnet3ID
-  Location            = var.Location1
-  ResourceGroupName   = var.ResourceGroupName1
+  source            = "./Modules/Network/BastionHost"
+  vnetName          = local.VNet1.vnet1Name
+  subnetID          = module.deployVNet1.subnet3ID
+  Location          = var.Location1
+  ResourceGroupName = var.ResourceGroupName1
   depends_on = [
     module.deployVNet1
   ]
 }
 
 module "deployDC1" {
-  source   = "./Modules/Compute/VirtualMachines/1nic-2disk-vm"
-  computerName        = local.dc1name
-  computerIP          = local.dc1IP
-  Publisher           = "MicrosoftWindowsServer"
-  Offer               = "WindowsServer"
-  OSVersion           = var.DC1OSVersion    
-  licenseType         = var.WindowsServerLicenseType
-  DataDisk1Name       = local.DataDisk1Name
-  vmsize              = var.dc1vmsize  
-  Location            = var.Location1
-  ResourceGroupName   = var.ResourceGroupName1
-  subnet              = module.deployVNet1.subnet1ID
-  adminUsername       = var.adminUsername
-  adminPassword       = data.azurerm_key_vault_secret.main.value
+  source            = "./Modules/Compute/VirtualMachines/1nic-2disk-vm"
+  computerName      = local.dc1name
+  computerIP        = local.dc1IP
+  Publisher         = "MicrosoftWindowsServer"
+  Offer             = "WindowsServer"
+  OSVersion         = var.DC1OSVersion
+  licenseType       = var.WindowsServerLicenseType
+  DataDisk1Name     = local.DataDisk1Name
+  vmsize            = var.dc1vmsize
+  Location          = var.Location1
+  ResourceGroupName = var.ResourceGroupName1
+  subnet            = module.deployVNet1.subnet1ID
+  adminUsername     = var.adminUsername
+  adminPassword     = data.azurerm_key_vault_secret.main.value
   depends_on = [
     azurerm_resource_group.RG1,
     module.deployVNet1
@@ -195,8 +195,8 @@ module "deployDC1" {
 }
 
 module "PromoteDC1" {
-  source   = "./Modules/Compute/VirtualMachines/DSC/FIRSTDC"
-  ResourceGroupName         = var.ResourceGroupName1  
+  source                    = "./Modules/Compute/VirtualMachines/DSC/FIRSTDC"
+  ResourceGroupName         = var.ResourceGroupName1
   computerName              = local.dc1name
   TimeZone                  = var.TimeZone1
   NetBiosDomain             = var.NetBiosDomain
