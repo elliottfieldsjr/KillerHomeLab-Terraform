@@ -85,12 +85,12 @@ variable "dc1vmsize" {
   description = "Domain Controller 1 VM Size"
 }
 
-variable "artifactslocation" {
+variable "artifactsLocation" {
   type        = string
   description = "The location of resources, such as templates and DSC modules, that the template depends on"
 }
 
-variable "artifactslocationSasToken" {
+variable "artifactsLocationSasToken" {
   type        = string
   sensitive   = true
   description = "The location of resources, such as templates and DSC modules, that the template depends on"
@@ -193,14 +193,16 @@ module "deployDC1" {
 
 module "PromoteDC1" {
   source   = "./Modules/Compute/VirtualMachines/1nic-2disk-vm"
-  computerName        = local.dc1name
-  TimeZone            = var.TimeZone1
-  NetBiosDomain       = var.NetBiosDomain
-  domainName          = local.InternalDomainName
-  Location            = var.Location1
-  adminUsername       = var.adminUsername
-  adminPassword       = data.azurerm_key_vault_secret.main.value  
-  artifactsLocation   = var.dc1vmsize  
+  computerName              = local.dc1name
+  TimeZone                  = var.TimeZone1
+  NetBiosDomain             = var.NetBiosDomain
+  domainName                = local.InternalDomainName
+  Location                  = var.Location1
+  adminUsername             = var.adminUsername
+  adminPassword             = data.azurerm_key_vault_secret.main.value
+  vmID                      = module.deployDC1.id
+  artifactsLocation         = var.artifactsLocation
+  artifactsLocationSasToken = var.artifactsLocationSasToken
   depends_on = [
     azurerm_resource_group.RG1,
     module.deployDC1
