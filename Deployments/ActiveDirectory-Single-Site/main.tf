@@ -1,3 +1,12 @@
+terraform {
+  backend "azurerm" {
+    resource_group_name  = var.ResourceGroupName1
+    storage_account_name = "tfstatedevops"
+    container_name       = "terraformgithubdeployment"
+    key                  = "deployment.tfstate"
+  }
+}
+
 provider "azurerm" {
   skip_provider_registration = true
   features {
@@ -133,6 +142,24 @@ data "azurerm_key_vault_secret" "main" {
 resource "azurerm_resource_group" "RG1" {
   name     = var.ResourceGroupName1
   location = var.Location1
+}
+
+resource "random_string" "random" {
+  length  = 8
+  special = false
+}
+
+resource "azurerm_storage_account" "STORAGE1" {
+  name                     = "singlestorage${lower(random_string.random.result)}"
+  location                 = var.Location1
+  resource_group_name      = var.ResourceGroupName1
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+
+  depends_on = [
+    azurerm_resource_group.RG1,
+    random_string.random
+  ]
 }
 
 module "deployVNet1" {
