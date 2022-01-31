@@ -1,5 +1,10 @@
 name: 'ActiveDirectory-Single-Site'
- 
+
+env:
+  Creds: ${{ secrets.AZURE_MAG2_CREDENTIALS }}
+  SubscriptionID1: ${{ secrets.AZURE_MAG_SUB2 }}
+  tf_actions_working_dir:  "./Deployments/ActiveDirectory-Single-Site/"
+
 on:
   push:
     branches:
