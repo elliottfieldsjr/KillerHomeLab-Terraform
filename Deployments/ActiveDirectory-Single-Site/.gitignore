@@ -1,3 +1,10 @@
+# Files to exclude
 testfile.txt
+.terraform.local.hcl
+LabPlan
+terraform.tfstate
+terraform.tfstate.backup
 
+# Directories to exclude
 TestDir/
+.terraform/
