@@ -56,17 +56,17 @@ variable "vmID" {
 }
 
 locals {
-    ModulesUrl  =   format("%s%s%s", var.artifactsLocation, "DSC/FIRSTDC.zip", var.artifactsLocationSasToken)
+  ModulesUrl = format("%s%s%s", var.artifactsLocation, "DSC/FIRSTDC.zip", var.artifactsLocationSasToken)
 }
 
 resource "azurerm_virtual_machine_extension" "firstdc" {
-  name                 = "firstdc"
-  virtual_machine_id   = var.vmID
-  publisher            = "Microsoft.Powershell"
-  type = "DSC"
-  type_handler_version = "2.73"
+  name                       = "firstdc"
+  virtual_machine_id         = var.vmID
+  publisher                  = "Microsoft.Powershell"
+  type                       = "DSC"
+  type_handler_version       = "2.73"
   auto_upgrade_minor_version = true
-  settings = <<SETTINGS
+  settings                   = <<SETTINGS
     {
         "ModulesUrl": "${local.ModulesUrl}",
         "ConfigurationFunction" : "FIRSTDC.ps1\\FIRSTDC",

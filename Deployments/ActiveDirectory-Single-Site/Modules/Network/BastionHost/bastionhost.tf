@@ -23,8 +23,8 @@ resource "azurerm_public_ip" "bastion_pubip" {
   location            = var.Location
   resource_group_name = var.ResourceGroupName
 
-  sku                 = "Standard" # Mandatory for Azure Bastion host
-  allocation_method   = "Static"
+  sku               = "Standard" # Mandatory for Azure Bastion host
+  allocation_method = "Static"
 }
 
 resource "azurerm_bastion_host" "bastion" {

@@ -44,10 +44,10 @@ variable "ResourceGroupName" {
 }
 
 resource "azurerm_virtual_network" "main" {
-  name                = var.vnetName
-  address_space       = [
+  name = var.vnetName
+  address_space = [
     var.vnetPrefix
-    ]
+  ]
   location            = var.Location
   resource_group_name = var.ResourceGroupName
 
@@ -64,7 +64,7 @@ resource "azurerm_virtual_network" "main" {
   subnet {
     name           = "AzureBastionSubnet"
     address_prefix = var.BastionsubnetPrefix
-  }  
+  }
 }
 
 output "subnet1ID" {
