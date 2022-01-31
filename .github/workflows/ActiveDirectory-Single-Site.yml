@@ -52,9 +52,9 @@ jobs:
       uses: hashicorp/terraform-github-actions@master
       with:
         tf_actions_version: 0.14.8
-        tf_actions_subcommand: 'plan -var-file="inputs.tfvars"'
+        tf_actions_subcommand: 'plan'
         tf_actions_working_dir: "./Deployments/ActiveDirectory-Single-Site"
- 
+        args: '-var-file="inputs.tfvars"'
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
       uses: hashicorp/terraform-github-actions@master
