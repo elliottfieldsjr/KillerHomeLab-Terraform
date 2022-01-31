@@ -21,45 +21,26 @@ jobs:
     defaults:
       run:
         shell: bash
- 
+        working-directory: ${{ env.tf_actions_working_dir }}
+
     steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v2
- 
-    - name: 'Terraform Format'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.14.8
-        tf_actions_subcommand: 'fmt'
-        tf_actions_working_dir: "./Deployments/ActiveDirectory-Single-Site"
-         
-    - name: 'Terraform Init'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.14.8
-        tf_actions_subcommand: 'init'
-        tf_actions_working_dir: "./Deployments/ActiveDirectory-Single-Site"
- 
-    - name: 'Terraform Validate'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.14.8
-        tf_actions_subcommand: 'validate'
-        tf_actions_working_dir: "./Deployments/ActiveDirectory-Single-Site"
-         
-    - name: 'Terraform Plan'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.14.8
-        tf_actions_subcommand: 'plan'
-        tf_actions_working_dir: "./Deployments/ActiveDirectory-Single-Site"
-        args: '-var-file="inputs.tfvars"'
-        
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/main'
-      uses: hashicorp/terraform-github-actions@master
-      with:
-        tf_actions_version: 0.14.8
-        tf_actions_subcommand: 'applya'
-        tf_actions_working_dir: "./Deployments/ActiveDirectory-Single-Site"
+    - uses: actions/checkout@v2
+    - uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color -var-file="inputs.tfvars"
+      continue-on-error: true
