@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment.tfstate"
+    key                  = "deployment1.tfstate"
   }
   required_providers {
     azurerm = {
