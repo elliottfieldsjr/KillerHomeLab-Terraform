@@ -8,11 +8,6 @@ terraform {
   }
 }
 
-provider "azurerm" {
-  features {
-  }
-}
-
 variable "ResourceGroupName1" {
   type        = string
   description = "Resource Group 1 Name"
