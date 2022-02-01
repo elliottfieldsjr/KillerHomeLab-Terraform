@@ -19,17 +19,17 @@ az ad sp create-for-rbac --name "[ENTER SP NAME HERE]" --role owner --scopes /su
 The output should look like the output shown below however we only need to notate "clientId", "clientSecret", "subscriptionId" and "tenantId"
 
 { <br>
-  "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "clientSecret": "xxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxx",
-  "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
-  "resourceManagerEndpointUrl": "https://management.azure.com/",
-  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
-  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
-  "galleryEndpointUrl": "https://gallery.azure.com/",
-  "managementEndpointUrl": "https://management.core.windows.net/"
-}
+  "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", <br>
+  "clientSecret": "xxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxx", <br>
+  "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", <br>
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", <br>
+  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com", <br>
+  "resourceManagerEndpointUrl": "https://management.azure.com/", <br>
+  "activeDirectoryGraphResourceId": "https://graph.windows.net/", <br>
+  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/", <br>
+  "galleryEndpointUrl": "https://gallery.azure.com/", <br>
+  "managementEndpointUrl": "https://management.core.windows.net/" <br>
+} <br>
 
 # Create GitHub Secrets
 GitHub secrets are used to store the values that construct your Azure Service Principal for use within GitHub Actions.  Follow the steps in the article below to create the following GitHub Secrets.
