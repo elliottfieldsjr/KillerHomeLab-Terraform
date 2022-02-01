@@ -218,6 +218,25 @@ module "PromoteDC1" {
 
 }
 
+module "UpdateVNet1DNS-1" {
+  source                    = "./Modules/Network/UpdateVirtualNetworkDNS"
+  vnetName            = local.VNet1.vnet1Name
+  vnetPrefix          = local.VNet1.vnet1Prefix
+  subnet1Name         = local.VNet1.vnet1subnet1Name
+  subnet1Prefix       = local.VNet1.vnet1subnet1Prefix
+  subnet2Name         = local.VNet1.vnet1subnet2Name
+  subnet2Prefix       = local.VNet1.vnet1subnet2Prefix
+  BastionsubnetPrefix = local.VNet1.vnet1BastionsubnetPrefix
+  DNSServerIP         = local.dc1IP
+  Location            = var.Location1
+  ResourceGroupName   = var.ResourceGroupName1
+  depends_on = [
+    azurerm_resource_group.RG1,
+    module.PromoteDC1
+  ]
+
+}
+
 output "adminUserName" {
   value = var.adminUsername
 }

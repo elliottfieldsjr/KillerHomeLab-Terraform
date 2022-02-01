@@ -1,4 +1,4 @@
-ResourceGroupName1        = "ActiveDirectory-Single-Site-TF-VA"
+ResourceGroupName1        = "ActiveDirectory-Single-Site-TF-EAST"
 Location1                 = "eastus"
 TimeZone1                 = "Eastern Standard Time"
 adminUsername             = "dom-admin"
