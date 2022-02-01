@@ -43,7 +43,7 @@ variable "ResourceGroupName" {
   description = "Resource Group 1 Name"
 }
 
-resource "azurerm_virtual_network" "main" {
+resource "azurerm_virtual_network" "vnet" {
   name = var.vnetName
   address_space = [
     var.vnetPrefix
