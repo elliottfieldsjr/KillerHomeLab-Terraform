@@ -67,6 +67,10 @@ resource "azurerm_virtual_network" "vnet" {
   }
 }
 
+output "vnetID" {
+  value = azurerm_virtual_network.vnet.id
+}
+
 output "subnet1ID" {
   value = azurerm_virtual_network.vnet.subnet.*.id[0]
 }
