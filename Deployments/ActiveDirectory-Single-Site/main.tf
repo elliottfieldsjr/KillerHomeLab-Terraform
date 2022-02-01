@@ -4,7 +4,6 @@ terraform {
     storage_account_name = "githubterraform"
     container_name       = "terraformstate"
     key                  = "deployment.tfstate"
-    use_microsoft_graph  = false
   }
   required_providers {
     azurerm = {
