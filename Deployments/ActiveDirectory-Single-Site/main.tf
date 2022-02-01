@@ -220,7 +220,7 @@ module "PromoteDC1" {
 
 resource "azurerm_virtual_network_dns_servers" "UpdateVNet1_1" {
   virtual_network_id = module.deployVNet1.vnetID
-  dns_servers        = ["local.dc1IP"]
+  dns_servers        = [local.dc1IP]
   depends_on = [
     module.PromoteDC1
   ]  
