@@ -5,6 +5,7 @@ terraform {
     container_name       = "terraformstate"
     key                  = "deployment.tfstate"
     environment          = "usgovernment"
+    use_microsoft_graph  = false
   }
   required_providers {
     azurerm = {
