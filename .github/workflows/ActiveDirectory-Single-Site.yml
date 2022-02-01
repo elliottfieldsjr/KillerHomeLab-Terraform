@@ -19,9 +19,8 @@ jobs:
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
-      AZURE_CLOUD_NAME: AzureUSGovernmentCloud"
     runs-on: ubuntu-latest
-    environment: AzureUSGovernment
+    environment: Production
  
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -32,8 +31,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: hashicorp/setup-terraform@v1
-      with:
-        environment: "AzureUSGovernment"   
 
     - name: Terraform fmt
       id: fmt

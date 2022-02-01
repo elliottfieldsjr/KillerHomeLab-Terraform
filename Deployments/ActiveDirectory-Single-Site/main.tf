@@ -1,10 +1,9 @@
 terraform {
   backend "azurerm" {
     resource_group_name  = "storageaccounts"
-    storage_account_name = "khlterraform"
+    storage_account_name = "githubterraform"
     container_name       = "terraformstate"
     key                  = "deployment.tfstate"
-    environment          = "usgovernment"
     use_microsoft_graph  = false
   }
   required_providers {
