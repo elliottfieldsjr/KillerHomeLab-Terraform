@@ -68,13 +68,13 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 output "subnet1ID" {
-  value = azurerm_virtual_network.main.subnet.*.id[0]
+  value = azurerm_virtual_network.vnet.subnet.*.id[0]
 }
 
 output "subnet2ID" {
-  value = azurerm_virtual_network.main.subnet.*.id[1]
+  value = azurerm_virtual_network.vnet.subnet.*.id[1]
 }
 
 output "subnet3ID" {
-  value = azurerm_virtual_network.main.subnet.*.id[2]
+  value = azurerm_virtual_network.vnet.subnet.*.id[2]
 }

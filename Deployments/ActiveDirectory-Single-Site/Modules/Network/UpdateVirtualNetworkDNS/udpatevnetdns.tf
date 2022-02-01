@@ -74,15 +74,3 @@ resource "azurerm_virtual_network" "updatevnet" {
     address_prefix = var.BastionsubnetPrefix
   }
 }
-
-output "subnet1ID" {
-  value = azurerm_virtual_network.main.subnet.*.id[0]
-}
-
-output "subnet2ID" {
-  value = azurerm_virtual_network.main.subnet.*.id[1]
-}
-
-output "subnet3ID" {
-  value = azurerm_virtual_network.main.subnet.*.id[2]
-}
