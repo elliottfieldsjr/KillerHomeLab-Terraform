@@ -13,11 +13,12 @@ The following deployments include various Azure Lab scenarios, inlcuding both Cl
 
 # Create an Azure Service Principal
 From Azure Cloud Shell run the following command:
+
 az ad sp create-for-rbac --name "[ENTER SP NAME HERE]" --role owner --scopes /subscriptions/[ENTER SUB ID HERE] --sdk-auth
 
 The output should look like the output shown below however we only need to notate "clientId", "clientSecret", "subscriptionId" and "tenantId"
 
-{
+{ <br>
   "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "clientSecret": "xxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxx",
   "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
