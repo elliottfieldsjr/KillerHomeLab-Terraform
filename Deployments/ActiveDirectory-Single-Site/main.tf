@@ -226,6 +226,20 @@ resource "azurerm_virtual_network_dns_servers" "UpdateVNet1_1" {
   ]  
 }
 
+module "RestartDC1" {
+  source                    = "./Modules/Compute/VirtualMachines/DSC/RESTARTDC"
+  ResourceGroupName         = var.ResourceGroupName1
+  computerName              = local.dc1name
+  vmID                      = module.deployDC1.vmID  
+  Location                  = var.Location1
+  artifactsLocation         = var.artifactsLocation
+  artifactsLocationSasToken = var.artifactsLocationSasToken
+  depends_on = [
+    azurerm_virtual_network_dns_servers.UpdateVNet1_1
+  ]
+
+}
+
 output "adminUserName" {
   value = var.adminUsername
 }
