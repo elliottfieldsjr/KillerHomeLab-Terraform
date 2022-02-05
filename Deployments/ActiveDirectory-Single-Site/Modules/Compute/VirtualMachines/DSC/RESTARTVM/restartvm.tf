@@ -34,7 +34,7 @@ locals {
 }
 
 resource "azurerm_virtual_machine_extension" "restartvm" {
-  name                       = "restartvm"
+  name                       = format("%s%s", var.computerName, "/Microsoft.Powershell.DSC")
   virtual_machine_id         = var.vmID
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"

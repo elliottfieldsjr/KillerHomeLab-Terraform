@@ -60,7 +60,7 @@ locals {
 }
 
 resource "azurerm_virtual_machine_extension" "firstdc" {
-  name                       = "firstdc"
+  name                       = format("%s%s", var.computerName, "/Microsoft.Powershell.DSC")
   virtual_machine_id         = var.vmID
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
