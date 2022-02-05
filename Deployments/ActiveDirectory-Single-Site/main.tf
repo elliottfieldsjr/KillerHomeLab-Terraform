@@ -227,7 +227,7 @@ resource "azurerm_virtual_network_dns_servers" "UpdateVNet1_1" {
 }
 
 module "RestartDC1" {
-  source                    = "./Modules/Compute/VirtualMachines/DSC/RESTARTDC"
+  source                    = "./Modules/Compute/VirtualMachines/DSC/RESTARTVM"
   ResourceGroupName         = var.ResourceGroupName1
   computerName              = local.dc1name
   vmID                      = module.deployDC1.vmID  
