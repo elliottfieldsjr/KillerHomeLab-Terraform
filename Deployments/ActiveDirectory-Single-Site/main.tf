@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment9.tfstate"
+    key                  = "deployment10.tfstate"
   }
   required_providers {
     azurerm = {
@@ -224,20 +224,6 @@ resource "azurerm_virtual_network_dns_servers" "UpdateVNet1_1" {
   depends_on = [
     module.PromoteDC1
   ]  
-}
-
-module "RestartDC1" {
-  source                    = "./Modules/Compute/VirtualMachines/DSC/RESTARTVM"
-  ResourceGroupName         = var.ResourceGroupName1
-  computerName              = local.dc1name
-  vmID                      = module.deployDC1.vmID  
-  Location                  = var.Location1
-  artifactsLocation         = var.artifactsLocation
-  artifactsLocationSasToken = var.artifactsLocationSasToken
-  depends_on = [
-    azurerm_virtual_network_dns_servers.UpdateVNet1_1
-  ]
-
 }
 
 output "adminUserName" {
