@@ -50,4 +50,4 @@ jobs:
 
     - name: Terraform Apply
       id: apply
-      run: terraform apply -chdir="./Deployments/ActiveDirectory-Single-Site/" ActiveDirectorySingleSitePlan
+      run: terraform -chdir="./Deployments/ActiveDirectory-Single-Site/" apply ActiveDirectorySingleSitePlan
