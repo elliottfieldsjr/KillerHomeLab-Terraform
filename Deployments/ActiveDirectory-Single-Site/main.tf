@@ -226,7 +226,7 @@ SETTINGS
   protected_settings = <<PROTECTED_SETTINGS
     {
       "Items":  {
-        "AdminPassword": data.azurerm_key_vault_secret.main.value
+        "AdminPassword": "data.azurerm_key_vault_secret.main.value"
         }
     }
 PROTECTED_SETTINGS
