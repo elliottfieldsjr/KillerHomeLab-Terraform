@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment3.tfstate"
+    key                  = "deployment4.tfstate"
   }
   required_providers {
     azurerm = {
@@ -137,6 +137,8 @@ locals {
   dc1IP              = "${var.vnet1ID}.1.101"
   DataDisk1Name      = "NTDS"
   InternalDomainName = format("%s%s%s%s", var.SubDNSDomain, var.InternalDomain, ".", var.InternalTLD)
+  FirstDCModulesUrl = format("%s%s%s", var.artifactsLocation, "DSC/FIRSTDC.zip", var.artifactsLocationSasToken)
+  RestartVMModulesUrl = format("%s%s%s", var.artifactsLocation, "DSC/RESTARTVM.zip", var.artifactsLocationSasToken)
 }
 
 data "azurerm_key_vault_secret" "main" {
@@ -218,26 +220,66 @@ module "PromoteDC1" {
 
 }
 
+resource "azurerm_virtual_machine_extension" "firstdc" {
+  name                       = "Microsoft.Powershell.DSC"
+  virtual_machine_id         = var.vmID
+  publisher                  = "Microsoft.Powershell"
+  type                       = "DSC"
+  type_handler_version       = "2.77"
+  auto_upgrade_minor_version = true
+  settings                   = <<SETTINGS
+    {
+        "ModulesUrl": "${local.FirstDCModulesUrl}",
+        "ConfigurationFunction" : "FIRSTDC.ps1\\FIRSTDC",
+        "Properties": {
+            "TimeZone": "${var.TimeZone}",
+            "DomainName": "${var.domainName}",
+            "NetBiosDomain": "${var.NetBiosDomain}",            
+            "AdminCreds": {
+                "UserName": "${var.adminUsername}",
+                "Password": "PrivateSettingsRef:AdminPassword"
+            }
+        }
+    }
+SETTINGS
+
+  protected_settings = <<PROTECTED_SETTINGS
+    {
+      "Items":  {
+        "AdminPassword": "${var.adminPassword}"
+        }
+    }
+PROTECTED_SETTINGS
+}
+
 resource "azurerm_virtual_network_dns_servers" "UpdateVNet1_1" {
   virtual_network_id = module.deployVNet1.vnetID
   dns_servers        = [local.dc1IP]
   depends_on = [
-    module.PromoteDC1
+    azurerm_virtual_machine_extension.firstdc
   ]  
 }
 
-module "RestartDC1" {
-  source                    = "./Modules/Compute/VirtualMachines/DSC/RESTARTVM"
-  ResourceGroupName         = var.ResourceGroupName1
-  computerName              = local.dc1name
-  vmID                      = module.deployDC1.vmID  
-  Location                  = var.Location1
-  artifactsLocation         = var.artifactsLocation
-  artifactsLocationSasToken = var.artifactsLocationSasToken
-  depends_on = [
-    azurerm_virtual_network_dns_servers.UpdateVNet1_1
-  ]
+resource "azurerm_virtual_machine_extension" "restartvm" {
+  name                       = "Microsoft.Powershell.DSC"
+  virtual_machine_id         = var.vmID
+  publisher                  = "Microsoft.Powershell"
+  type                       = "DSC"
+  type_handler_version       = "2.77"
+  auto_upgrade_minor_version = true
+  settings                   = <<SETTINGS
+    {
+        "ModulesUrl": "${local.RestartVMModulesUrl}",
+        "ConfigurationFunction" : "RESTARTVM.ps1\\RESTARTVM",
+        "Properties": {
+        }
+    }
+SETTINGS
 
+  protected_settings = <<PROTECTED_SETTINGS
+    {
+    }
+PROTECTED_SETTINGS
 }
 
 output "adminUserName" {
