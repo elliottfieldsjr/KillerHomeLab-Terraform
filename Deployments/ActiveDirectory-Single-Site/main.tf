@@ -222,7 +222,7 @@ module "PromoteDC1" {
 
 resource "azurerm_virtual_machine_extension" "firstdc" {
   name                       = "Microsoft.Powershell.DSC"
-  virtual_machine_id         = var.vmID
+  virtual_machine_id         = module.deployDC1.vmID
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
   type_handler_version       = "2.77"
@@ -233,7 +233,7 @@ resource "azurerm_virtual_machine_extension" "firstdc" {
         "ConfigurationFunction" : "FIRSTDC.ps1\\FIRSTDC",
         "Properties": {
             "TimeZone": "${var.TimeZone}",
-            "DomainName": "${var.domainName}",
+            "DomainName": "${local.InternalDomainName}}",
             "NetBiosDomain": "${var.NetBiosDomain}",            
             "AdminCreds": {
                 "UserName": "${var.adminUsername}",
@@ -246,7 +246,7 @@ SETTINGS
   protected_settings = <<PROTECTED_SETTINGS
     {
       "Items":  {
-        "AdminPassword": "${var.adminPassword}"
+        "AdminPassword": data.azurerm_key_vault_secret.main.value
         }
     }
 PROTECTED_SETTINGS
@@ -262,7 +262,7 @@ resource "azurerm_virtual_network_dns_servers" "UpdateVNet1_1" {
 
 resource "azurerm_virtual_machine_extension" "restartvm" {
   name                       = "Microsoft.Powershell.DSC"
-  virtual_machine_id         = var.vmID
+  virtual_machine_id         = module.deployDC1.vmID
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
   type_handler_version       = "2.77"
