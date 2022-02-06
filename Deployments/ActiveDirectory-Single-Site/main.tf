@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment6.tfstate"
+    key                  = "deployment7.tfstate"
   }
   required_providers {
     azurerm = {
@@ -139,6 +139,7 @@ locals {
   InternalDomainName = format("%s%s%s%s", var.SubDNSDomain, var.InternalDomain, ".", var.InternalTLD)
   FirstDCModulesUrl = format("%s%s%s", var.artifactsLocation, "DSC/FIRSTDC.zip", var.artifactsLocationSasToken)
   RestartVMModulesUrl = format("%s%s%s", var.artifactsLocation, "DSC/RESTARTVM.zip", var.artifactsLocationSasToken)
+  Password = data.azurerm_key_vault_secret.main.value
 }
 
 data "azurerm_key_vault_secret" "main" {
@@ -192,7 +193,7 @@ module "deployDC1" {
   ResourceGroupName = var.ResourceGroupName1
   subnet            = module.deployVNet1.subnet1ID
   adminUsername     = var.adminUsername
-  adminPassword     = data.azurerm_key_vault_secret.main.value
+  adminPassword     = local.Password
   depends_on = [
     azurerm_resource_group.RG1,
     module.deployVNet1
@@ -229,7 +230,7 @@ SETTINGS
   protected_settings = <<PROTECTED_SETTINGS
     {
       "Items":  {
-        "AdminPassword": "data.azurerm_key_vault_secret.main.value"
+        "AdminPassword": "${local.Password}"
         }
     }
 PROTECTED_SETTINGS
