@@ -33,7 +33,7 @@ locals {
   ModulesUrl = format("%s%s%s", var.artifactsLocation, "DSC/RESTARTVM.zip", var.artifactsLocationSasToken)
 }
 
-resource "azurerm_virtual_machine_extension" "restartvm" {
+resource "azurerm_virtual_machine_extension" "dsc" {
   name                       = "Microsoft.Powershell.DSC"
   virtual_machine_id         = var.vmID
   publisher                  = "Microsoft.Powershell"

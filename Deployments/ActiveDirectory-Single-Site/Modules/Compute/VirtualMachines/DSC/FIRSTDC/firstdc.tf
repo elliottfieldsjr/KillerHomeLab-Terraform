@@ -59,7 +59,7 @@ locals {
   ModulesUrl = format("%s%s%s", var.artifactsLocation, "DSC/FIRSTDC.zip", var.artifactsLocationSasToken)
 }
 
-resource "azurerm_virtual_machine_extension" "firstdc" {
+resource "azurerm_virtual_machine_extension" "dsc" {
   name                       = "Microsoft.Powershell.DSC"
   virtual_machine_id         = var.vmID
   publisher                  = "Microsoft.Powershell"
