@@ -136,6 +136,7 @@ locals {
   dc1name            = "${var.NamingConvention}-dc-01"
   dc1IP              = "${var.vnet1ID}.1.101"
   DataDisk1Name      = "NTDS"
+  InternalDomainName = format("%s%s%s%s", var.SubDNSDomain, var.InternalDomain, ".", var.InternalTLD)
 }
 
 data "azurerm_key_vault_secret" "main" {
