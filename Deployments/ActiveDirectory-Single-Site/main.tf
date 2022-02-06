@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment5.tfstate"
+    key                  = "deployment6.tfstate"
   }
   required_providers {
     azurerm = {
@@ -216,7 +216,7 @@ resource "azurerm_virtual_machine_extension" "firstdc" {
         "ConfigurationFunction" : "FIRSTDC.ps1\\FIRSTDC",
         "Properties": {
             "TimeZone": "${var.TimeZone1}",
-            "DomainName": "${local.InternalDomainName}}",
+            "DomainName": "${local.InternalDomainName}",
             "NetBiosDomain": "${var.NetBiosDomain}",            
             "AdminCreds": {
                 "UserName": "${var.adminUsername}",
