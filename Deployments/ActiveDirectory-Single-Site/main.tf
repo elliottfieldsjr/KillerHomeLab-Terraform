@@ -200,26 +200,6 @@ module "deployDC1" {
 
 }
 
-module "PromoteDC1" {
-  source                    = "./Modules/Compute/VirtualMachines/DSC/FIRSTDC"
-  ResourceGroupName         = var.ResourceGroupName1
-  computerName              = local.dc1name
-  TimeZone                  = var.TimeZone1
-  NetBiosDomain             = var.NetBiosDomain
-  domainName                = local.InternalDomainName
-  Location                  = var.Location1
-  adminUsername             = var.adminUsername
-  adminPassword             = data.azurerm_key_vault_secret.main.value
-  vmID                      = module.deployDC1.vmID
-  artifactsLocation         = var.artifactsLocation
-  artifactsLocationSasToken = var.artifactsLocationSasToken
-  depends_on = [
-    azurerm_resource_group.RG1,
-    module.deployDC1
-  ]
-
-}
-
 resource "azurerm_virtual_machine_extension" "firstdc" {
   name                       = "Microsoft.Powershell.DSC"
   virtual_machine_id         = module.deployDC1.vmID
@@ -232,7 +212,7 @@ resource "azurerm_virtual_machine_extension" "firstdc" {
         "ModulesUrl": "${local.FirstDCModulesUrl}",
         "ConfigurationFunction" : "FIRSTDC.ps1\\FIRSTDC",
         "Properties": {
-            "TimeZone": "${var.TimeZone}",
+            "TimeZone": "${var.TimeZone1}",
             "DomainName": "${local.InternalDomainName}}",
             "NetBiosDomain": "${var.NetBiosDomain}",            
             "AdminCreds": {
