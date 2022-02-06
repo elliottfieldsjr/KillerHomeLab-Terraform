@@ -57,6 +57,7 @@ jobs:
 
   ActiveDirectory1:
     name: 'Deploying-ActiveDirectory1'
+    needs: Infrastructure
     env:
       ARM_CLIENT_ID: ${{ secrets.MIC_SUB1_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.MIC_SUB1_CLIENT_SECRET }}
