@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment4.tfstate"
+    key                  = "deployment5.tfstate"
   }
   required_providers {
     azurerm = {
@@ -207,6 +207,9 @@ resource "azurerm_virtual_machine_extension" "firstdc" {
   type                       = "DSC"
   type_handler_version       = "2.77"
   auto_upgrade_minor_version = true
+  depends_on = [
+    module.deployDC1
+  ]  
   settings                   = <<SETTINGS
     {
         "ModulesUrl": "${local.FirstDCModulesUrl}",
@@ -247,6 +250,9 @@ resource "azurerm_virtual_machine_extension" "restartvm" {
   type                       = "DSC"
   type_handler_version       = "2.77"
   auto_upgrade_minor_version = true
+  depends_on = [
+    azurerm_virtual_network_dns_servers.UpdateVNet1_1
+  ]  
   settings                   = <<SETTINGS
     {
         "ModulesUrl": "${local.RestartVMModulesUrl}",
