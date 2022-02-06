@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment7.tfstate"
+    key                  = "deployment8.tfstate"
   }
   required_providers {
     azurerm = {
@@ -201,7 +201,7 @@ module "deployDC1" {
 
 }
 
-resource "azurerm_virtual_machine_extension" "firstdc" {
+resource "azurerm_virtual_machine_extension" "PowerShellDSC" {
   name                       = "Microsoft.Powershell.DSC"
   virtual_machine_id         = module.deployDC1.vmID
   publisher                  = "Microsoft.Powershell"
@@ -240,11 +240,11 @@ resource "azurerm_virtual_network_dns_servers" "UpdateVNet1_1" {
   virtual_network_id = module.deployVNet1.vnetID
   dns_servers        = [local.dc1IP]
   depends_on = [
-    azurerm_virtual_machine_extension.firstdc
+    azurerm_virtual_machine_extension.PowerShellDSC
   ]  
 }
 
-resource "azurerm_virtual_machine_extension" "restartvm" {
+resource "azurerm_virtual_machine_extension" "PowerShellDSC" {
   name                       = "Microsoft.Powershell.DSC"
   virtual_machine_id         = module.deployDC1.vmID
   publisher                  = "Microsoft.Powershell"
