@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment10.tfstate"
+    key                  = "deployment11.tfstate"
   }
   required_providers {
     azurerm = {
@@ -199,7 +199,7 @@ module "deployDC1" {
 }
 
 module "PromoteDC1" {
-  source                    = "./Modules/Compute/VirtualMachines/DSC/FIRSTDC"
+  source                    = "./Modules/FIRSTDC"
   ResourceGroupName         = var.ResourceGroupName1
   computerName              = local.dc1name
   TimeZone                  = var.TimeZone1
@@ -216,14 +216,6 @@ module "PromoteDC1" {
     module.deployDC1
   ]
 
-}
-
-resource "azurerm_virtual_network_dns_servers" "UpdateVNet1_1" {
-  virtual_network_id = module.deployVNet1.vnetID
-  dns_servers        = [local.dc1IP]
-  depends_on = [
-    module.PromoteDC1
-  ]  
 }
 
 output "adminUserName" {

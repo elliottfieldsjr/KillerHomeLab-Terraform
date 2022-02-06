@@ -1,7 +1,10 @@
 name: 'ActiveDirectory-Single-Site'
 
 env:
-  tf_actions_working_dir:  "./Deployments/ActiveDirectory-Single-Site/"
+  tf_infra_working_dir:  "./Deployments/ActiveDirectory-Single-Site/Infrastructure"
+  tf_ad1_working_dir:  "./Deployments/ActiveDirectory-Single-Site/ActiveDirectory1"  
+  tf_updatedns_working_dir:  "./Deployments/ActiveDirectory-Single-Site/UpdateDNS"    
+  tf_restartvm_working_dir:  "./Deployments/ActiveDirectory-Single-Site/RestartVM"      
 
 on:
   push:
@@ -10,8 +13,8 @@ on:
   pull_request:
  
 jobs:
-  terraform:
-    name: 'Deploying-ActiveDirectory-Single-Site'
+  Infrastructure:
+    name: 'Deploying-ActiveDirectory-Infrastructure'
     env:
       ARM_CLIENT_ID: ${{ secrets.MIC_SUB1_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.MIC_SUB1_CLIENT_SECRET }}
@@ -24,7 +27,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ${{ env.tf_actions_working_dir }}
+        working-directory: ${{ env.tf_infra_working_dir }}
 
     steps:
     - uses: actions/checkout@v2
@@ -50,4 +53,46 @@ jobs:
 
     - name: Terraform Apply
       id: apply
-      run: terraform -chdir=Deployments/ActiveDirectory-Single-Site apply ActiveDirectorySingleSitePlan
+      run: terraform apply ActiveDirectorySingleSitePlan
+
+  ActiveDirectory1:
+    name: 'Deploying-ActiveDirectory1'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.MIC_SUB1_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.MIC_SUB1_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.MIC_SUB1_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.MIC_SUB1_TENANT_ID }}
+    runs-on: ubuntu-latest
+    environment: Production
+ 
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.tf_ad1_working_dir }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
+
+    - name: Terraform Init
+      id: init
+      run: terraform init -upgrade
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color -var-file="inputs.tfvars" -out ActiveDirectorySingleSitePlan
+      continue-on-error: true
+
+    - name: Terraform Apply
+      id: apply
+      run: terraform apply ActiveDirectorySingleSitePlan      
