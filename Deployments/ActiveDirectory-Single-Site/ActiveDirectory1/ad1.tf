@@ -191,6 +191,14 @@ module "PromoteDC1" {
 
 }
 
+resource "azurerm_virtual_network_dns_servers" "UpdateVNet1_1" {
+  virtual_network_id = data.azurerm_virtual_network.vnet1.id
+  dns_servers        = [local.dc1IP]
+  depends_on = [
+    module.PromoteDC1
+  ]  
+}
+
 output "adminUserName" {
   value = var.adminUsername
 }
