@@ -50,7 +50,7 @@ data "azurerm_virtual_machine" "dc1" {
 }
 
 resource "azurerm_virtual_machine_extension" "dsc" {
-  name                       = "Microsoft.Powershell.DSC"
+  name                       = "RestartVM"
   virtual_machine_id         = data.azurerm_virtual_machine.dc1.id
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
