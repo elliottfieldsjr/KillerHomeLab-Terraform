@@ -143,19 +143,15 @@ data "azurerm_key_vault_secret" "main" {
   key_vault_id = var.KeyVaultResourceId
 }
 
-data "azurerm_resource_group" "RG1" {
-  name = var.ResourceGroupName1
-}
-
 data "azurerm_virtual_network" "vnet1" {
   name = local.VNet1.vnet1Name
-  resource_group_name = data.azurerm_resource_group.RG1
+  resource_group_name = var.ResourceGroupName1
 }
 
 data "azurerm_subnet" "subnet1" {
   name = local.VNet1.vnet1subnet1Name
   virtual_network_name = local.VNet1.vnet1Name
-  resource_group_name = data.azurerm_resource_group.RG1
+  resource_group_name = var.ResourceGroupName1
   
 }
 
