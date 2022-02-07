@@ -50,11 +50,11 @@ data "azurerm_virtual_machine" "dc1" {
 }
 
 resource "azurerm_virtual_machine_extension" "dsc" {
-  name                       = "Microsoft.Powershell.DSC1"
+  name                       = "Microsoft.Powershell.DSC"
   virtual_machine_id         = data.azurerm_virtual_machine.dc1.id
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
-  type_handler_version       = "2.77"
+  type_handler_version       = "2.83"
   auto_upgrade_minor_version = true
   settings                   = <<SETTINGS
     {
