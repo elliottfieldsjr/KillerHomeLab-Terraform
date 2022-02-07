@@ -54,8 +54,7 @@ resource "azurerm_virtual_machine_extension" "dsc" {
   virtual_machine_id         = data.azurerm_virtual_machine.dc1.id
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
-  type_handler_version       = "2.83"
-  auto_upgrade_minor_version = true
+  type_handler_version       = "2.77"
   settings                   = <<SETTINGS
     {
         "ModulesUrl": "${local.ModulesUrl}",
