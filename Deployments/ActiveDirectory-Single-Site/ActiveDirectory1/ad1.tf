@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment11.tfstate"
+    key                  = "ad1.tfstate"
   }
   required_providers {
     azurerm = {
@@ -121,7 +121,6 @@ variable "KeyVaultResourceId" {
 }
 
 locals {
-  StorageAccountType = "Standard_LRS"
   VNet1 = {
 
     vnet1Name                = "${var.NamingConvention}-VNet1"
@@ -144,36 +143,20 @@ data "azurerm_key_vault_secret" "main" {
   key_vault_id = var.KeyVaultResourceId
 }
 
-resource "azurerm_resource_group" "RG1" {
-  name     = var.ResourceGroupName1
-  location = var.Location1
+data "azurerm_resource_group" "RG1" {
+  name = "existing"
 }
 
-module "deployVNet1" {
-  source              = "./Modules/Network/VirtualNetwork"
-  vnetName            = local.VNet1.vnet1Name
-  vnetPrefix          = local.VNet1.vnet1Prefix
-  subnet1Name         = local.VNet1.vnet1subnet1Name
-  subnet1Prefix       = local.VNet1.vnet1subnet1Prefix
-  subnet2Name         = local.VNet1.vnet1subnet2Name
-  subnet2Prefix       = local.VNet1.vnet1subnet2Prefix
-  BastionsubnetPrefix = local.VNet1.vnet1BastionsubnetPrefix
-  Location            = var.Location1
-  ResourceGroupName   = var.ResourceGroupName1
-  depends_on = [
-    azurerm_resource_group.RG1
-  ]
+data "azurerm_virtual_network" "vnet1" {
+  name = local.VNet1.vnet1Name
+  resource_group_name = data.azurerm_resource_group.RG1
 }
 
-module "deployBastionHost1" {
-  source            = "./Modules/Network/BastionHost"
-  vnetName          = local.VNet1.vnet1Name
-  subnetID          = module.deployVNet1.subnet3ID
-  Location          = var.Location1
-  ResourceGroupName = var.ResourceGroupName1
-  depends_on = [
-    module.deployVNet1
-  ]
+data "azurerm_subnet" "subnet1" {
+  name = local.VNet1.vnet1subnet1Name
+  virtual_network_name = local.VNet1.vnet1Name
+  resource_group_name = data.azurerm_resource_group.RG1
+  
 }
 
 module "deployDC1" {
@@ -188,14 +171,9 @@ module "deployDC1" {
   vmsize            = var.dc1vmsize
   Location          = var.Location1
   ResourceGroupName = var.ResourceGroupName1
-  subnet            = module.deployVNet1.subnet1ID
+  subnet            = data.azurerm_subnet.subnet1.id
   adminUsername     = var.adminUsername
   adminPassword     = data.azurerm_key_vault_secret.main.value
-  depends_on = [
-    azurerm_resource_group.RG1,
-    module.deployVNet1
-  ]
-
 }
 
 module "PromoteDC1" {
@@ -212,7 +190,6 @@ module "PromoteDC1" {
   artifactsLocation         = var.artifactsLocation
   artifactsLocationSasToken = var.artifactsLocationSasToken
   depends_on = [
-    azurerm_resource_group.RG1,
     module.deployDC1
   ]
 

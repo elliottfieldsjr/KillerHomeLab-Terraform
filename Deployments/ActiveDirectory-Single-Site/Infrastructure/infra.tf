@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment11.tfstate"
+    key                  = "infra1.tfstate"
   }
   required_providers {
     azurerm = {
@@ -21,12 +21,6 @@ provider "azurerm" {
 variable "ResourceGroupName1" {
   type        = string
   description = "Resource Group 1 Name"
-}
-
-variable "adminPasswordName" {
-  type        = string
-  sensitive   = true
-  description = "Naming Convention for All Resources"
 }
 
 variable "NamingConvention" {
