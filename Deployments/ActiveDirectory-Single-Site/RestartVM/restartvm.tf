@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "TerraForm-Infra"
     storage_account_name = "khlterraform"
     container_name       = "terraformstate"
-    key                  = "deployment11.tfstate"
+    key                  = "restartdc1.tfstate"
   }
   required_providers {
     azurerm = {
@@ -23,69 +23,50 @@ variable "ResourceGroupName1" {
   description = "Resource Group 1 Name"
 }
 
-variable "adminPasswordName" {
-  type        = string
-  sensitive   = true
-  description = "Naming Convention for All Resources"
-}
-
 variable "NamingConvention" {
   type        = string
   description = "Naming Convention for All Resources"
 }
 
-variable "Location1" {
+variable "artifactsLocation" {
   type        = string
-  description = "Resource Location"
+  description = "The location of resources, such as templates and DSC modules, that the template depends on"
 }
 
-variable "vnet1ID" {
+variable "artifactsLocationSasToken" {
   type        = string
-  description = "VNet1 1st 2 Octets"
+  sensitive   = true
+  description = "The location of resources, such as templates and DSC modules, that the template depends on"
 }
 
 locals {
-  VNet1 = {
-
-    vnet1Name                = "${var.NamingConvention}-VNet1"
-    vnet1Prefix              = "${var.vnet1ID}.0.0/16"
-    vnet1subnet1Name         = "${var.NamingConvention}-VNet1-Subnet1"
-    vnet1subnet1Prefix       = "${var.vnet1ID}.1.0/24"
-    vnet1subnet2Name         = "${var.NamingConvention}-VNet1-Subnet2"
-    vnet1subnet2Prefix       = "${var.vnet1ID}.2.0/24"
-    vnet1BastionsubnetPrefix = "${var.vnet1ID}.253.0/24"
-
-  }
+  dc1name            = "${var.NamingConvention}-dc-01"  
+  ModulesUrl = format("%s%s%s", var.artifactsLocation, "DSC/RESTARTVM.zip", var.artifactsLocationSasToken)
 }
 
-resource "azurerm_resource_group" "RG1" {
-  name     = var.ResourceGroupName1
-  location = var.Location1
+data "azurerm_virtual_machine" "dc1" {
+  name                = local.dc1name
+  resource_group_name = var.ResourceGroupName1
 }
 
-module "deployVNet1" {
-  source              = "./Modules/Network/VirtualNetwork"
-  vnetName            = local.VNet1.vnet1Name
-  vnetPrefix          = local.VNet1.vnet1Prefix
-  subnet1Name         = local.VNet1.vnet1subnet1Name
-  subnet1Prefix       = local.VNet1.vnet1subnet1Prefix
-  subnet2Name         = local.VNet1.vnet1subnet2Name
-  subnet2Prefix       = local.VNet1.vnet1subnet2Prefix
-  BastionsubnetPrefix = local.VNet1.vnet1BastionsubnetPrefix
-  Location            = var.Location1
-  ResourceGroupName   = var.ResourceGroupName1
-  depends_on = [
-    azurerm_resource_group.RG1
-  ]
-}
+resource "azurerm_virtual_machine_extension" "RestartDC" {
+  name                       = "Microsoft.Powershell.DSC"
+  virtual_machine_id         = data.azurerm_virtual_machine.dc1.id
+  publisher                  = "Microsoft.Powershell"
+  type                       = "DSC"
+  type_handler_version       = "2.77"
+  auto_upgrade_minor_version = true
+  settings                   = <<SETTINGS
+    {
+        "ModulesUrl": "${local.ModulesUrl}",
+        "ConfigurationFunction" : "RESTARTVM.ps1\\RESTARTVM",
+        "Properties": {
+        }
+    }
+SETTINGS
 
-module "deployBastionHost1" {
-  source            = "./Modules/Network/BastionHost"
-  vnetName          = local.VNet1.vnet1Name
-  subnetID          = module.deployVNet1.subnet3ID
-  Location          = var.Location1
-  ResourceGroupName = var.ResourceGroupName1
-  depends_on = [
-    module.deployVNet1
-  ]
+  protected_settings = <<PROTECTED_SETTINGS
+    {
+    }
+PROTECTED_SETTINGS
 }
