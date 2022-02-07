@@ -144,7 +144,7 @@ data "azurerm_key_vault_secret" "main" {
 }
 
 data "azurerm_resource_group" "RG1" {
-  name = "existing"
+  name = var.ResourceGroupName1
 }
 
 data "azurerm_virtual_network" "vnet1" {
