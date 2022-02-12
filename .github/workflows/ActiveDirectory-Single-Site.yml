@@ -48,7 +48,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -no-color -var-file="../inputs.tfvars" -out Infrastructure
+      run: terraform plan -lock="FALSE" -no-color -var-file="../inputs.tfvars" -out Infrastructure
       continue-on-error: true
 
     - name: Terraform Apply
@@ -134,7 +134,7 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan  -lock="FALSE" -no-color -var-file="../inputs.tfvars" -out RestartDC
+      run: terraform plan -lock="FALSE" -no-color -var-file="../inputs.tfvars" -out RestartDC
       continue-on-error: true
 
     - name: Terraform Apply
