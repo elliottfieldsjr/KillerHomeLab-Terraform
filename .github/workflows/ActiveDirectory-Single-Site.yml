@@ -48,12 +48,12 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -no-color -var-file="../inputs.tfvars" -out ActiveDirectorySingleSitePlan
+      run: terraform plan -no-color -var-file="../inputs.tfvars" -out Infrastructure
       continue-on-error: true
 
     - name: Terraform Apply
       id: apply
-      run: terraform apply ActiveDirectorySingleSitePlan
+      run: terraform apply Infrastructure
 
   ActiveDirectory1:
     name: 'Deploying-ActiveDirectory1'
@@ -98,10 +98,6 @@ jobs:
       id: apply
       run: terraform apply ActiveDirectorySingleSitePlan
 
-    - name: Terraform Destroy
-      id: destroy
-      run: terraform destroy -target=azurerm_virtual_machine_extension.dsc
-
   RestartDC1:
     name: 'Restart-DC1'
     needs: ActiveDirectory1
@@ -138,9 +134,9 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -no-color -var-file="../inputs.tfvars" -out ActiveDirectorySingleSitePlan
+      run: terraform plan -no-color -var-file="../inputs.tfvars" -out RestartDC
       continue-on-error: true
 
     - name: Terraform Apply
       id: apply
-      run: terraform apply ActiveDirectorySingleSitePlan      
+      run: terraform apply RestartDC      
