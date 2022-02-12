@@ -53,7 +53,7 @@ jobs:
 
     - name: Terraform Apply
       id: apply
-      run: terraform apply Infrastructure
+      run: terraform apply -lock="FALSE" Infrastructure
 
   ActiveDirectory1:
     name: 'Deploying-ActiveDirectory1'
@@ -96,7 +96,7 @@ jobs:
 
     - name: Terraform Apply
       id: apply
-      run: terraform apply ActiveDirectorySingleSitePlan
+      run: terraform apply -lock="FALSE" ActiveDirectorySingleSitePlan
 
   RestartDC1:
     name: 'Restart-DC1'
@@ -139,4 +139,4 @@ jobs:
 
     - name: Terraform Apply
       id: apply
-      run: terraform apply RestartDC      
+      run: terraform apply -lock="FALSE" RestartDC      
